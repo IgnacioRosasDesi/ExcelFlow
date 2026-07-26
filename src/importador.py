@@ -1,19 +1,26 @@
 from pathlib import Path
 import pandas as pd
 
+from config import SUPPORTED_EXTENSIONS
+
 
 class Importador:
-
-    EXTENSIONES_COMPATIBLES = [
-        ".xlsx",
-        ".csv"
-    ]
+    """
+    Se encarga de buscar e importar archivos compatibles.
+    """
 
     def __init__(self, carpeta):
-
         self.carpeta = Path(carpeta)
 
     def buscar_archivos(self):
+        """
+        Devuelve una lista con todos los archivos compatibles.
+        """
+
+        if not self.carpeta.exists():
+            raise FileNotFoundError(
+                f"La carpeta '{self.carpeta}' no existe."
+            )
 
         archivos = []
 
@@ -21,13 +28,28 @@ class Importador:
 
             if archivo.is_file():
 
-                if archivo.suffix.lower() in self.EXTENSIONES_COMPATIBLES:
+                if archivo.suffix.lower() in SUPPORTED_EXTENSIONS:
 
                     archivos.append(archivo)
 
         return archivos
 
+    def leer_excel(self, archivo):
+        """
+        Lee un archivo Excel y devuelve un DataFrame.
+        """
+        return pd.read_excel(archivo)
+
+    def leer_csv(self, archivo):
+        """
+        Lee un archivo CSV y devuelve un DataFrame.
+        """
+        return pd.read_csv(archivo)
+
     def leer_archivo(self, archivo):
+        """
+        Detecta automáticamente el tipo de archivo.
+        """
 
         extension = archivo.suffix.lower()
 
@@ -37,13 +59,24 @@ class Importador:
         elif extension == ".csv":
             return self.leer_csv(archivo)
 
-        else:
-            raise ValueError("Formato no soportado.")
+        raise ValueError(f"Formato no soportado: {extension}")
 
-    def leer_excel(self, archivo):
+    def importar(self):
+        """
+        Lee todos los archivos encontrados y devuelve
+        una lista de DataFrames.
+        """
 
-        return pd.read_excel(archivo)
+        dataframes = []
 
-    def leer_csv(self, archivo):
+        archivos = self.buscar_archivos()
 
-        return pd.read_csv(archivo)
+        for archivo in archivos:
+
+            print(f"📄 Importando: {archivo.name}")
+
+            df = self.leer_archivo(archivo)
+
+            dataframes.append(df)
+
+        return dataframes

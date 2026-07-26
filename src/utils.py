@@ -1,14 +1,13 @@
 from pathlib import Path
 
+from config import INPUT_FOLDER, OUTPUT_FOLDER
+
 
 def verificar_directorios():
-    """
-    Crea las carpetas necesarias si no existen.
-    """
 
     carpetas = [
-        "data/entrada",
-        "data/salida"
+        INPUT_FOLDER,
+        OUTPUT_FOLDER
     ]
 
     for carpeta in carpetas:
