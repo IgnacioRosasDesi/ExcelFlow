@@ -1,30 +1,18 @@
-from config import APP_NAME, VERSION, INPUT_FOLDER
-from utils import verificar_directorios
-from importador import Importador
-from procesador import Procesador
+from excelflow import ExcelFlow
 
 
 def main():
 
-    print("=" * 50)
-    print(f"      {APP_NAME} v{VERSION}")
-    print("=" * 50)
+    try:
 
-    verificar_directorios()
+        app = ExcelFlow()
 
-    importador = Importador(INPUT_FOLDER)
+        app.ejecutar()
 
-    dataframes = importador.importar()
+    except Exception as error:
 
-    print(f"\nSe importaron {len(dataframes)} archivo(s).")
-
-    procesador = Procesador()
-
-    df_final = procesador.unir_dataframes(dataframes)
-
-    print(f"Filas totales: {len(df_final)}")
-
-    print("\n✔ Sistema finalizado correctamente.")
+        print("\n❌ Error inesperado")
+        print(error)
 
 
 if __name__ == "__main__":
