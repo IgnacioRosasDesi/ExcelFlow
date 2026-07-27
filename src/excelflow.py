@@ -3,6 +3,7 @@ from utils import verificar_directorios
 from importador import Importador
 from procesador import Procesador
 from limpiador import Limpiador
+from exportador import Exportador
 
 
 class ExcelFlow:
@@ -12,10 +13,10 @@ class ExcelFlow:
     """
 
     def __init__(self):
-
         self.importador = Importador(INPUT_FOLDER)
         self.procesador = Procesador()
         self.limpiador = Limpiador()
+        self.exportador = Exportador()
 
     def ejecutar(self):
 
@@ -33,9 +34,7 @@ class ExcelFlow:
 
         filas_originales = len(df_final)
 
-        df_final = self.limpiador.eliminar_filas_vacias(df_final)
-
-        df_final = self.limpiador.eliminar_duplicados(df_final)
+        df_final = self.limpiador.limpiar(df_final)
 
         estadisticas = self.limpiador.obtener_estadisticas()
 
@@ -45,5 +44,7 @@ class ExcelFlow:
         print(f"Filas finales    : {len(df_final)}")
         print(f"Filas vacías     : {estadisticas['filas_vacias']}")
         print(f"Duplicados       : {estadisticas['duplicados']}")
+
+        self.exportador.exportar(df_final)
 
         print("\n✔ Sistema finalizado correctamente.")

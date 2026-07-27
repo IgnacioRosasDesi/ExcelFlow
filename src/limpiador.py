@@ -47,3 +47,12 @@ class Limpiador:
         """
 
         return self.estadisticas
+    def limpiar(self, df):
+        """
+        Ejecuta todas las tareas de limpieza disponibles.
+        """
+
+        df = self.eliminar_filas_vacias(df)
+        df = self.eliminar_duplicados(df)
+
+        return df
