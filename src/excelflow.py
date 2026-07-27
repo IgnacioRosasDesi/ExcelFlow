@@ -2,6 +2,7 @@ from config import APP_NAME, VERSION, INPUT_FOLDER
 from utils import verificar_directorios
 from importador import Importador
 from procesador import Procesador
+from limpiador import Limpiador
 
 
 class ExcelFlow:
@@ -11,13 +12,12 @@ class ExcelFlow:
     """
 
     def __init__(self):
+
         self.importador = Importador(INPUT_FOLDER)
         self.procesador = Procesador()
+        self.limpiador = Limpiador()
 
     def ejecutar(self):
-        """
-        Ejecuta el flujo completo de ExcelFlow.
-        """
 
         print("=" * 50)
         print(f"      {APP_NAME} v{VERSION}")
@@ -31,6 +31,19 @@ class ExcelFlow:
 
         df_final = self.procesador.unir_dataframes(dataframes)
 
-        print(f"Filas totales: {len(df_final)}")
+        filas_originales = len(df_final)
+
+        df_final = self.limpiador.eliminar_filas_vacias(df_final)
+
+        df_final = self.limpiador.eliminar_duplicados(df_final)
+
+        estadisticas = self.limpiador.obtener_estadisticas()
+
+        print("\n===== RESUMEN =====")
+
+        print(f"Filas originales : {filas_originales}")
+        print(f"Filas finales    : {len(df_final)}")
+        print(f"Filas vacías     : {estadisticas['filas_vacias']}")
+        print(f"Duplicados       : {estadisticas['duplicados']}")
 
         print("\n✔ Sistema finalizado correctamente.")
