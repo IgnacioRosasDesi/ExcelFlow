@@ -1,3 +1,4 @@
+import time
 from config import APP_NAME, VERSION, INPUT_FOLDER
 from utils import verificar_directorios
 from importador import Importador
@@ -27,6 +28,7 @@ class ExcelFlow:
         print("=" * 50)
 
         try:
+            inicio = time.perf_counter()
 
             verificar_directorios()
 
@@ -42,12 +44,17 @@ class ExcelFlow:
 
             archivo_generado = self.exportador.exportar(df_final)
 
+            fin = time.perf_counter()
+
+            tiempo_total = fin - inicio
+
             self.reporte.mostrar(
                 archivos=len(dataframes),
                 filas_originales=filas_originales,
                 filas_finales=len(df_final),
                 estadisticas=estadisticas,
-                archivo_generado=archivo_generado
+                archivo_generado=archivo_generado,
+                tiempo=tiempo_total
             )
 
             print("\n✔ Sistema finalizado correctamente.")

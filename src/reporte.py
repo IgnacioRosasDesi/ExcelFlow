@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class Reporte:
@@ -16,7 +16,8 @@ class Reporte:
         filas_originales,
         filas_finales,
         estadisticas,
-        archivo_generado=None
+        archivo_generado=None,
+        tiempo=None
     ):
 
         print("\n" + "=" * 50)
@@ -36,5 +37,9 @@ class Reporte:
         if archivo_generado:
 
             print(f"Archivo generado      : {archivo_generado}")
+
+        if tiempo is not None:
+
+            print(f"Tiempo de ejecución  : {tiempo:.3f} segundos")
 
         print("=" * 50)
