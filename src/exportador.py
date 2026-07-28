@@ -18,16 +18,37 @@ class Exportador:
 
     def generar_nombre_archivo(self):
         """
-        Genera un nombre único basado en fecha y hora.
+        Genera un nombre base único utilizando
+        la fecha y hora actual.
         """
 
         fecha = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
         return self.output_folder / f"{EXPORT_FILENAME}_{fecha}"
 
-    def exportar_excel(self, dataframe):
+    def _generar_archivo(self, extension):
+        """
+        Genera la ruta completa del archivo
+        con la extensión indicada.
 
-        archivo = self.generar_nombre_archivo().with_suffix(".xlsx")
+        Args:
+            extension (str): Extensión del archivo.
+
+        Returns:
+            pathlib.Path
+        """
+
+        return self.generar_nombre_archivo().with_suffix(extension)
+
+    def exportar_excel(self, dataframe):
+        """
+        Exporta un DataFrame a Excel.
+
+        Returns:
+            str: Nombre del archivo generado.
+        """
+
+        archivo = self._generar_archivo(".xlsx")
 
         dataframe.to_excel(
             archivo,
@@ -36,9 +57,17 @@ class Exportador:
 
         print(f"\n📁 Archivo exportado: {archivo.name}")
 
-    def exportar_csv(self, dataframe):
+        return archivo.name
 
-        archivo = self.generar_nombre_archivo().with_suffix(".csv")
+    def exportar_csv(self, dataframe):
+        """
+        Exporta un DataFrame a CSV.
+
+        Returns:
+            str: Nombre del archivo generado.
+        """
+
+        archivo = self._generar_archivo(".csv")
 
         dataframe.to_csv(
             archivo,
@@ -48,18 +77,24 @@ class Exportador:
 
         print(f"\n📁 Archivo exportado: {archivo.name}")
 
+        return archivo.name
+
     def exportar(self, dataframe):
         """
-        Decide automáticamente el formato de exportación.
+        Exporta el DataFrame utilizando el formato
+        definido en DEFAULT_EXPORT_FORMAT.
+
+        Returns:
+            str: Nombre del archivo generado.
         """
 
         if DEFAULT_EXPORT_FORMAT == ".xlsx":
 
-            self.exportar_excel(dataframe)
+            return self.exportar_excel(dataframe)
 
         elif DEFAULT_EXPORT_FORMAT == ".csv":
 
-            self.exportar_csv(dataframe)
+            return self.exportar_csv(dataframe)
 
         else:
 

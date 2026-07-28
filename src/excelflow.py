@@ -4,6 +4,7 @@ from importador import Importador
 from procesador import Procesador
 from limpiador import Limpiador
 from exportador import Exportador
+from reporte import Reporte
 
 
 class ExcelFlow:
@@ -17,6 +18,7 @@ class ExcelFlow:
         self.procesador = Procesador()
         self.limpiador = Limpiador()
         self.exportador = Exportador()
+        self.reporte = Reporte()
 
     def ejecutar(self):
 
@@ -24,27 +26,33 @@ class ExcelFlow:
         print(f"      {APP_NAME} v{VERSION}")
         print("=" * 50)
 
-        verificar_directorios()
+        try:
 
-        dataframes = self.importador.importar()
+            verificar_directorios()
 
-        print(f"\nSe importaron {len(dataframes)} archivo(s).")
+            dataframes = self.importador.importar()
 
-        df_final = self.procesador.unir_dataframes(dataframes)
+            df_final = self.procesador.unir_dataframes(dataframes)
 
-        filas_originales = len(df_final)
+            filas_originales = len(df_final)
 
-        df_final = self.limpiador.limpiar(df_final)
+            df_final = self.limpiador.limpiar(df_final)
 
-        estadisticas = self.limpiador.obtener_estadisticas()
+            estadisticas = self.limpiador.obtener_estadisticas()
 
-        print("\n===== RESUMEN =====")
+            archivo_generado = self.exportador.exportar(df_final)
 
-        print(f"Filas originales : {filas_originales}")
-        print(f"Filas finales    : {len(df_final)}")
-        print(f"Filas vacías     : {estadisticas['filas_vacias']}")
-        print(f"Duplicados       : {estadisticas['duplicados']}")
+            self.reporte.mostrar(
+                archivos=len(dataframes),
+                filas_originales=filas_originales,
+                filas_finales=len(df_final),
+                estadisticas=estadisticas,
+                archivo_generado=archivo_generado
+            )
 
-        self.exportador.exportar(df_final)
+            print("\n✔ Sistema finalizado correctamente.")
 
-        print("\n✔ Sistema finalizado correctamente.")
+        except Exception as e:
+
+            print("\n❌ Error inesperado")
+            print(e)
