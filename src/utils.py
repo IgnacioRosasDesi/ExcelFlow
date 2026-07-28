@@ -1,16 +1,24 @@
 from pathlib import Path
 
-from config import INPUT_FOLDER, OUTPUT_FOLDER
+from config import (
+    INPUT_FOLDER,
+    OUTPUT_FOLDER,
+    LOG_FOLDER
+)
 
 
 def verificar_directorios():
 
     carpetas = [
         INPUT_FOLDER,
-        OUTPUT_FOLDER
+        OUTPUT_FOLDER,
+        LOG_FOLDER
     ]
 
     for carpeta in carpetas:
-        Path(carpeta).mkdir(parents=True, exist_ok=True)
+        Path(carpeta).mkdir(
+            parents=True,
+            exist_ok=True
+        )
 
     print("✔ Directorios verificados.")

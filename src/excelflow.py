@@ -6,6 +6,7 @@ from procesador import Procesador
 from limpiador import Limpiador
 from exportador import Exportador
 from reporte import Reporte
+from logger import Logger
 
 
 class ExcelFlow:
@@ -20,6 +21,7 @@ class ExcelFlow:
         self.limpiador = Limpiador()
         self.exportador = Exportador()
         self.reporte = Reporte()
+        self.logger = Logger()
 
     def ejecutar(self):
 
@@ -31,8 +33,16 @@ class ExcelFlow:
             inicio = time.perf_counter()
 
             verificar_directorios()
+            
+            self.logger.escribir("ExcelFlow iniciado.")
+
+            self.logger.escribir("Directorios verificados.")
 
             dataframes = self.importador.importar()
+
+            self.logger.escribir(
+                f"Archivos importados: {len(dataframes)}"
+            )
 
             df_final = self.procesador.unir_dataframes(dataframes)
 
@@ -43,6 +53,10 @@ class ExcelFlow:
             estadisticas = self.limpiador.obtener_estadisticas()
 
             archivo_generado = self.exportador.exportar(df_final)
+
+            self.logger.escribir(
+                f"Archivo generado: {archivo_generado}"
+            )
 
             fin = time.perf_counter()
 
@@ -56,10 +70,15 @@ class ExcelFlow:
                 archivo_generado=archivo_generado,
                 tiempo=tiempo_total
             )
+            self.logger.escribir("Proceso finalizado correctamente.")
 
             print("\n✔ Sistema finalizado correctamente.")
 
         except Exception as e:
 
-            print("\n❌ Error inesperado")
+            self.logger.escribir(
+                f"ERROR: {e}"
+            )
+
+            print("\n❌ Error inesperado.")
             print(e)
